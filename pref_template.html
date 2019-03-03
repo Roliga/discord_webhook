@@ -1,0 +1,31 @@
+<style>
+  #widget_discord_webhook_url {
+    width: 30em;
+  }
+</style>
+<div dojoType="dijit.layout.AccordionPane" title="<i class='material-icons'>extension</i> Discord Webhook">
+  <p>
+    Instructions for how to create a webhook URL for a server channel can be found <a href="https://support.discordapp.com/hc/en-us/articles/228383668">here</a>.
+  </p>
+  <form dojoType="dijit.form.Form">
+    <script type="dojo/method" event="onSubmit" args="evt">
+      evt.preventDefault();
+      if (this.validate()) {
+        console.log(dojo.objectToQuery(this.getValues()));
+        new Ajax.Request('backend.php', {
+          parameters: dojo.objectToQuery(this.getValues()),
+          onComplete: function(transport) {
+            Notify.info(transport.responseText);
+          }
+        });
+        //this.reset();
+      }
+    </script>
+    <input dojoType="dijit.form.TextBox" type="hidden" name="op" value="pluginhandler">
+    <input dojoType="dijit.form.TextBox" type="hidden" name="method" value="save">
+    <input dojoType="dijit.form.TextBox" type="hidden" name="plugin" value="discord_webhook">
+    <input dojoType="dijit.form.ValidationTextBox" id="discord_webhook_url" type="url" required="1" pattern="{discord_api_url}.+" title="{discord_api_url}..." placeholder="{discord_api_url}..." name="webhook_url" value="{webhook_url}">
+    <br><br>
+    <button dojoType="dijit.form.Button" type="submit">Save</button>
+  </form>
+</div>
