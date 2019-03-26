@@ -2,6 +2,7 @@
 class Discord_Webhook extends Plugin {
 	private $host;
 	private $discord_api_url = "https://discordapp.com/api/webhooks/";
+	private $default_content_length = 0;
 
 	function about() {
 		return array(1.0,
@@ -66,6 +67,22 @@ class Discord_Webhook extends Plugin {
 			$payload = array();
 			$payload["content"] = $article["title"] . " " . $article["link"];
 
+			$content_length = $this->host->get($this, 'content_length');
+			if (!is_numeric($content_length))
+				$content_length = $this->default_content_length;
+
+			if ($content_length > 0) {
+				$content_stripped = preg_replace('#<br\s*/?>#i', "\n", $article["content"]);
+				$content_stripped = strip_tags($content_stripped);
+				$content_stripped = trim($content_stripped);
+
+				if (strlen($content_stripped) > $content_length) {
+					$payload["content"] .= "\n_" . substr($content_stripped, 0, $content_length) . "..._";
+				} else {
+					$payload["content"] .= "\n_" . $content_stripped . "_";
+				}
+			}
+
 			$sth = $this->pdo->prepare("SELECT title FROM ttrss_feeds WHERE id = ?");
 			$sth->execute([$article["feed"]["id"]]);
 
@@ -92,6 +109,8 @@ class Discord_Webhook extends Plugin {
 
 		$replacements = array(
 			'{webhook_url}' => $this->host->get($this, 'webhook_url'),
+			'{content_length}' => $this->host->get($this, 'content_length'),
+			'{default_content_length}' => $this->default_content_length,
 			'{discord_api_url}' => $this->discord_api_url
 		);
 
@@ -103,6 +122,7 @@ class Discord_Webhook extends Plugin {
 	function save()
 	{
 		$this->host->set($this, 'webhook_url', $_POST['webhook_url']);
+		$this->host->set($this, 'content_length', $_POST['content_length']);
 		echo __("Configuration saved");
 	}
 
