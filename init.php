@@ -74,6 +74,7 @@ class Discord_Webhook extends Plugin {
 			if ($content_length > 0) {
 				$content_stripped = preg_replace('#<br\s*/?>#i', "\n", $article["content"]);
 				$content_stripped = strip_tags($content_stripped);
+				$content_stripped = html_entity_decode($content_stripped);
 				$content_stripped = trim($content_stripped);
 
 				if (strlen($content_stripped) > $content_length) {
