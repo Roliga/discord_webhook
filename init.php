@@ -1,7 +1,7 @@
 <?php
 class Discord_Webhook extends Plugin {
 	private $host;
-	private $discord_api_url = "https://discordapp.com/api/webhooks/";
+	private $discord_api_url = "https://discord.com/api/webhooks/";
 	private $default_content_length = 0;
 
 	function about() {
