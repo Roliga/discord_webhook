@@ -11,12 +11,8 @@
     <script type="dojo/method" event="onSubmit" args="evt">
       evt.preventDefault();
       if (this.validate()) {
-        console.log(dojo.objectToQuery(this.getValues()));
-        new Ajax.Request('backend.php', {
-          parameters: dojo.objectToQuery(this.getValues()),
-          onComplete: function(transport) {
-            Notify.info(transport.responseText);
-          }
+        xhr.post('backend.php', this.getValues(), (reply) => {
+          Notify.info(reply);
         });
         //this.reset();
       }
