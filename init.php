@@ -1,7 +1,7 @@
 <?php
 class Discord_Webhook extends Plugin {
 	private $host;
-	private $discord_api_url = "https://discordapp.com/api/webhooks/";
+	private $discord_api_url = "https://discord.com/api/webhooks/";
 	private $default_content_length = 0;
 
 	function about() {
@@ -26,7 +26,7 @@ class Discord_Webhook extends Plugin {
 		return array("needs_curl" => true);
 	}
 
-	function hook_filter_triggered($feed, $owner_uid, $article, $matched_filters, $matched_rules, &$article_filters) {
+	function hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters) {
 		# Don't apply to articles that have been deleted by a previous filter
 		$delete = false;
 		foreach($article_filters as $action_key => $action) {
